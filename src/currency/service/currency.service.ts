@@ -4,8 +4,7 @@ import { Injectable } from '@nestjs/common';
 export class CurrencyService {
   private conversionRates: Record<string, number> = {
     USD_TO_EUR: 0.94,
-    EUR_TO_USD: 1.06,
-    // Add more conversion rates as needed
+    EUR_TO_USD: 1.06, //add more convertion
   };
 
   async convertCurrency(
