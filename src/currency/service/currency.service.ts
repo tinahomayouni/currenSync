@@ -20,21 +20,22 @@ export class CurrencyService {
     currencyFrom: string,
     currencyTo: string,
     amount: number,
+    rate: number,
   ): Promise<{ result: number } | { error: string }> {
     if (!currencyFrom || !currencyTo || !amount) {
       return { error: 'Invalid query parameters.' };
     }
     const rateKey = `${currencyFrom.toUpperCase()}_TO_${currencyTo.toUpperCase()}`;
-    const conversionRate = this.conversionRates[rateKey];
-    console.log(rateKey, conversionRate);
+    const conversionRateManual = this.conversionRates[rateKey];
+    console.log(rateKey, conversionRateManual);
 
-    if (currencyFrom === currencyTo || !conversionRate) {
+    if (currencyFrom === currencyTo || !conversionRateManual) {
       return {
         error: `Conversion rate not available for ${currencyFrom} to ${currencyTo}`,
       };
     }
 
-    const convertedAmount = amount * conversionRate;
+    const convertedAmount = amount * conversionRateManual;
     console.log(convertedAmount, 'convertedAmount');
 
     // Save the conversion data to the database
@@ -43,22 +44,22 @@ export class CurrencyService {
     currencyEntity.currencyTo = currencyTo;
     currencyEntity.amount = amount;
     currencyEntity.convertedAmount = convertedAmount;
+    currencyEntity.conversionRate = rate;
 
     await this.currencyRepository.save(currencyEntity);
     return { result: convertedAmount };
   }
 
-  async listCurrencies(): Promise<CurrenciesResponseDto[]> {
+  async listCurrencies(): Promise<string[]> {
     const currencies = await this.currencyRepository.find({
       select: ['currencyFrom'],
     });
 
-    // Use Set to remove repeated items
-    const uniqueCurrencySet = new Set(currencies);
+    // Extract the "currencyFrom" property from each object and convert to an array of strings
+    const uniqueCurrencies = currencies.map(
+      (currency) => currency.currencyFrom,
+    );
 
-    // Convert the Set back to an array
-    const uniqueCurrencyArray = Array.from(uniqueCurrencySet);
-
-    return uniqueCurrencyArray;
+    return uniqueCurrencies;
   }
 }

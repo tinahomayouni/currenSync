@@ -27,16 +27,23 @@ export class CurrencyController {
     required: true,
     description: 'Amount to convert',
   })
+  @ApiQuery({
+    name: 'rate',
+    type: Number,
+    required: true,
+    description: 'conversion rate',
+  })
   @ApiResponse({
     status: 200,
     description: 'Currency conversion result',
   })
   async convertCurrency(@Query() query: CurrenciesResponseDto) {
-    const { currencyFrom, currencyTo, amount } = query;
+    const { currencyFrom, currencyTo, amount, conversionRate } = query;
     const convertedAmount = await this.currencyService.convertCurrency(
       currencyFrom,
       currencyTo,
       amount,
+      conversionRate,
     );
     console.log('CurrencyController');
     return {
@@ -44,6 +51,7 @@ export class CurrencyController {
       currencyTo,
       amount,
       convertedAmount,
+      conversionRate,
     };
   }
   @Get('currencies') // http://localhost:3000/currency/currencies

@@ -12,4 +12,8 @@ export class convertCurrenciesDTO {
   @IsNotEmpty()
   @IsNumber()
   amount: number;
+
+  @IsNotEmpty()
+  @IsNumber()
+  rate: number;
 }
