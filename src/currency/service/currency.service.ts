@@ -47,7 +47,10 @@ export class CurrencyService {
     return { result: convertedAmount };
   }
 
-  async listCurrencies(): Promise<Currency[]> {
-    return this.currencyRepository.find();
+  async listCurrencies(): Promise<string[]> {
+    const currencies = await this.currencyRepository.find({
+      select: ['currencyFrom'],
+    });
+    return currencies.map((currency) => currency.currencyFrom);
   }
 }
