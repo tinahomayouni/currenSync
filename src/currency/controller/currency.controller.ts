@@ -27,7 +27,6 @@ export class CurrencyController {
   @Get('currencies') // http://localhost:3000/currency/currencies
   async listCurrencies() {
     const currencies = await this.currencyService.listCurrencies();
-
     return currencies;
   }
 }

@@ -2,6 +2,7 @@ import { Injectable, Inject } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { Currency } from '../../entity/currency.entity'; // Adjust the path as needed
 import { InjectRepository } from '@nestjs/typeorm';
+import { currenciesResponseDto } from '../Dtos/currencies.response.dtos';
 
 @Injectable()
 export class CurrencyService {
@@ -47,14 +48,13 @@ export class CurrencyService {
     return { result: convertedAmount };
   }
 
-  async listCurrencies(): Promise<string[]> {
+  async listCurrencies(): Promise<currenciesResponseDto[]> {
     const currencies = await this.currencyRepository.find({
       select: ['currencyFrom'],
     });
+
     // Use Set to remove repeated items
-    const uniqueCurrencySet = new Set(
-      currencies.map((currency) => currency.currencyFrom),
-    );
+    const uniqueCurrencySet = new Set(currencies);
 
     // Convert the Set back to an array
     const uniqueCurrencyArray = Array.from(uniqueCurrencySet);
