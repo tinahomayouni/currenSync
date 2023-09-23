@@ -52,11 +52,17 @@ export class CurrencyService {
       select: ['currencyFrom'],
     });
 
-    // Extract the "currencyFrom" property from each object and convert to an array of strings
-    const uniqueCurrencies = currencies.map(
-      (currency) => currency.currencyFrom,
-    );
+    // Use Set to remove repeated items
+    const uniqueCurrencySet = new Set<string>();
 
-    return uniqueCurrencies;
+    // Extract the "currencyFrom" property from each object and add it to the Set
+    currencies.forEach((currency) => {
+      uniqueCurrencySet.add(currency.currencyFrom);
+    });
+
+    // Convert the Set back to an array
+    const uniqueCurrencyArray = Array.from(uniqueCurrencySet);
+
+    return uniqueCurrencyArray;
   }
 }
