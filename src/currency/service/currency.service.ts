@@ -51,6 +51,14 @@ export class CurrencyService {
     const currencies = await this.currencyRepository.find({
       select: ['currencyFrom'],
     });
-    return currencies.map((currency) => currency.currencyFrom);
+    // Use Set to remove repeated items
+    const uniqueCurrencySet = new Set(
+      currencies.map((currency) => currency.currencyFrom),
+    );
+
+    // Convert the Set back to an array
+    const uniqueCurrencyArray = Array.from(uniqueCurrencySet);
+
+    return uniqueCurrencyArray;
   }
 }
