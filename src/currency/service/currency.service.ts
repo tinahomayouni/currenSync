@@ -1,10 +1,18 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Inject } from '@nestjs/common';
+import { Repository } from 'typeorm';
+import { Currency } from '../../entity/currency.entity'; // Adjust the path as needed
+import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class CurrencyService {
+  constructor(
+    @InjectRepository(Currency)
+    private readonly currencyRepository: Repository<Currency>,
+  ) {}
+
   private conversionRates: Record<string, number> = {
     USD_TO_EUR: 0.94,
-    EUR_TO_USD: 1.06, //add more convertion
+    EUR_TO_USD: 1.06, // Add more conversion rates as needed
   };
 
   async convertCurrency(
@@ -15,16 +23,31 @@ export class CurrencyService {
     if (!currencyFrom || !currencyTo || !amount) {
       return { error: 'Invalid query parameters.' };
     }
-
     const rateKey = `${currencyFrom.toUpperCase()}_TO_${currencyTo.toUpperCase()}`;
     const conversionRate = this.conversionRates[rateKey];
+    console.log(rateKey, conversionRate);
 
-    if (currencyFrom == currencyTo || !conversionRate) {
+    if (currencyFrom === currencyTo || !conversionRate) {
       return {
         error: `Conversion rate not available for ${currencyFrom} to ${currencyTo}`,
       };
     }
 
-    return { result: amount * conversionRate };
+    const convertedAmount = amount * conversionRate;
+    console.log(convertedAmount, 'convertedAmount');
+
+    // Save the conversion data to the database
+    const currencyEntity = new Currency();
+    currencyEntity.currencyFrom = currencyFrom;
+    currencyEntity.currencyTo = currencyTo;
+    currencyEntity.amount = amount;
+    currencyEntity.convertedAmount = convertedAmount;
+
+    await this.currencyRepository.save(currencyEntity);
+    return { result: convertedAmount };
+  }
+
+  async listCurrencies(): Promise<Currency[]> {
+    return this.currencyRepository.find();
   }
 }

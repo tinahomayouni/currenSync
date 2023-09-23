@@ -5,7 +5,7 @@ import { CurrencyService } from '../service/currency.service';
 export class CurrencyController {
   constructor(private readonly currencyService: CurrencyService) {}
 
-  @Get('convert') // Specify the correct route path
+  @Get('convert') //http://localhost:3000/currency/convert?currency-from=USD&currency-to=EUR&amount=100
   async convertCurrency(
     @Query('currency-from') currencyFrom: string,
     @Query('currency-to') currencyTo: string,
@@ -16,11 +16,18 @@ export class CurrencyController {
       currencyTo,
       amount,
     );
+    console.log('CurrencyController');
     return {
       currencyFrom,
       currencyTo,
       amount,
       convertedAmount,
     };
+  }
+  @Get('currencies') // http://localhost:3000/currency/currencies
+  async listCurrencies() {
+    const currencies = await this.currencyService.listCurrencies();
+
+    return currencies;
   }
 }
