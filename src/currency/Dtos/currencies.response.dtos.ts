@@ -4,5 +4,4 @@ export class CurrenciesResponseDto {
   currencyTo: string;
   amount: number;
   convertedAmount: number;
-  conversionRate: number;
 }

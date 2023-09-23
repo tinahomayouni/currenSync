@@ -20,7 +20,6 @@ export class CurrencyService {
     currencyFrom: string,
     currencyTo: string,
     amount: number,
-    rate: number,
   ): Promise<{ result: number } | { error: string }> {
     if (!currencyFrom || !currencyTo || !amount) {
       return { error: 'Invalid query parameters.' };
@@ -44,8 +43,6 @@ export class CurrencyService {
     currencyEntity.currencyTo = currencyTo;
     currencyEntity.amount = amount;
     currencyEntity.convertedAmount = convertedAmount;
-    currencyEntity.conversionRate = rate;
-
     await this.currencyRepository.save(currencyEntity);
     return { result: convertedAmount };
   }

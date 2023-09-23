@@ -17,6 +17,4 @@ export class Currency {
 
   @Column()
   convertedAmount: number;
-  @Column({ default: 0 })
-  conversionRate: number;
 }
