@@ -1,4 +1,4 @@
-export class currenciesResponseDto {
+export class CurrenciesResponseDto {
   id: number;
   currencyFrom: string;
   currencyTo: string;

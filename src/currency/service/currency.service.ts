@@ -2,7 +2,7 @@ import { Injectable, Inject } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { Currency } from '../../entity/currency.entity'; // Adjust the path as needed
 import { InjectRepository } from '@nestjs/typeorm';
-import { currenciesResponseDto } from '../Dtos/currencies.response.dtos';
+import { CurrenciesResponseDto } from '../Dtos/currencies.response.dtos';
 
 @Injectable()
 export class CurrencyService {
@@ -48,7 +48,7 @@ export class CurrencyService {
     return { result: convertedAmount };
   }
 
-  async listCurrencies(): Promise<currenciesResponseDto[]> {
+  async listCurrencies(): Promise<CurrenciesResponseDto[]> {
     const currencies = await this.currencyRepository.find({
       select: ['currencyFrom'],
     });
