@@ -1,7 +1,7 @@
 import { Controller, Get, Query } from '@nestjs/common';
 import { CurrencyService } from '../service/currency.service';
-import { CurrenciesResponseDto } from '../Dtos/currencies.response.dtos';
 import { ApiOperation, ApiResponse, ApiQuery } from '@nestjs/swagger'; // Import Swagger decorators
+import { ConvertCurrenciesDTO } from '../Dtos/covertCurrencies.request.dtos';
 
 @Controller('currency')
 export class CurrencyController {
@@ -9,29 +9,11 @@ export class CurrencyController {
 
   @Get('convert') //http://localhost:3000/currency/convert?currency-from=USD&currency-to=EUR&amount=100
   @ApiOperation({ summary: 'Convert currency' }) // add text beside api url as description
-  @ApiQuery({
-    name: 'currencyFrom',
-    type: String,
-    required: true,
-    description: 'Source currency code',
-  })
-  @ApiQuery({
-    name: 'currencyTo',
-    type: String,
-    required: true,
-    description: 'Target currency code',
-  })
-  @ApiQuery({
-    name: 'amount',
-    type: Number,
-    required: true,
-    description: 'Amount to convert',
-  })
   @ApiResponse({
     status: 200,
     description: 'Currency conversion result',
   })
-  async convertCurrency(@Query() query: CurrenciesResponseDto) {
+  async convertCurrency(@Query() query: ConvertCurrenciesDTO) {
     const { currencyFrom, currencyTo, amount } = query;
     const convertedAmount = await this.currencyService.convertCurrency(
       currencyFrom,

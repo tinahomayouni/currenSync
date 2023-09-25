@@ -1,4 +1,4 @@
-import { Injectable, Inject } from '@nestjs/common';
+import { Injectable, Inject, BadRequestException } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { Currency } from '../../entity/currency.entity'; // Adjust the path as needed
 import { InjectRepository } from '@nestjs/typeorm';
@@ -20,18 +20,15 @@ export class CurrencyService {
     currencyFrom: string,
     currencyTo: string,
     amount: number,
-  ): Promise<{ result: number } | { error: string }> {
-    if (!currencyFrom || !currencyTo || !amount) {
-      return { error: 'Invalid query parameters.' };
-    }
+  ): Promise<number> {
     const rateKey = `${currencyFrom.toUpperCase()}_TO_${currencyTo.toUpperCase()}`;
     const conversionRateManual = this.conversionRates[rateKey];
     console.log(rateKey, conversionRateManual);
 
     if (currencyFrom === currencyTo || !conversionRateManual) {
-      return {
-        error: `Conversion rate not available for ${currencyFrom} to ${currencyTo}`,
-      };
+      throw new BadRequestException(
+        `Conversion rate not available for ${currencyFrom} to ${currencyTo}`, //handle error by nest
+      );
     }
 
     const convertedAmount = amount * conversionRateManual;
@@ -44,7 +41,7 @@ export class CurrencyService {
     currencyEntity.amount = amount;
     currencyEntity.convertedAmount = convertedAmount;
     await this.currencyRepository.save(currencyEntity);
-    return { result: convertedAmount };
+    return convertedAmount;
   }
 
   async listCurrencies(): Promise<string[]> {
